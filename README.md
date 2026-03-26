@@ -1,63 +1,76 @@
-﻿# Zurich Housing Market Analysis (2009-2025)
+# Zurich Housing Market Analysis (2009-2025)
 
-## Project Overview
-This project analyzes housing price dynamics in Zurich using aggregated transaction data from 2009 to 2025. The objective is to identify key market patterns across districts and room-size segments, and to provide business-oriented insights that support pricing, investment, and market monitoring decisions.
+Analytics project on long-term Zurich housing price dynamics with a business interpretation layer for market monitoring and decision support.
 
-## Business Questions
-1. How has Zurich's housing price per square meter evolved from 2009 to 2025?
-2. Which districts are consistently the most expensive when prices are weighted by transaction volume?
-3. Which districts show the strongest and weakest short-term momentum (YoY 2025 vs 2024)?
-4. How do prices differ across room-size segments, and which segment is currently priced highest?
-5. Where are potential market pressure signals (high price growth + low transaction volume)?
+- Coverage: 2009 to 2025
+- Analysis-ready sample: 1,209 records
+- Focus: price-per-sqm trends, district ranking, and short-term momentum
+
+## Business Problem
+How has Zurich's housing market evolved over time, which districts remain structurally expensive, and where are short-term pressure signals emerging? This project translates aggregated housing data into interpretable indicators for pricing, monitoring, and planning discussions.
 
 ## Dataset
-- **Source file:** `bau515od5155.csv`
-- **Cleaned output:** `data/zurich_housing_clean.csv`
-- **Analysis-ready output:** `data/zurich_housing_analysis_ready.csv`
-- **Observations:** 1,209 rows (analysis-ready file)
-- **Time range:** 2009-2025
-- **Granularity:** Aggregated by year, area, and room segment
-- **Key fields:** `year`, `area_name`, `area_level`, `rooms_num`, `rooms_label`, `num_transactions`, `price_per_sqm_chf`, `median_price_chf`, `total_price_chf`
-
-## Data Cleaning
-**Script:** `clean_zurich_housing.py`
-
-Main actions:
-- Renamed columns to consistent English names
-- Converted numeric fields safely with coercion
-- Removed duplicates
-- Created helper fields (`area_level`, `rooms_num`, `has_price_data`)
-- Built analysis-ready subset: valid price metrics, positive transaction counts, excluded city-total aggregates
+- Raw source file: `bau515od5155.csv`
+- Cleaned output: `data/zurich_housing_clean.csv`
+- Analysis-ready output: `data/zurich_housing_analysis_ready.csv`
+- Granularity: year x area x room-segment aggregates
+- Key fields: `year`, `area_name`, `rooms_label`, `num_transactions`, `price_per_sqm_chf`, `median_price_chf`
 
 ## Methodology
-**Exploratory Analysis**
-- Weighted yearly trend of CHF/sqm (by `num_transactions`)
-- District ranking by weighted average price
-- Room-segment comparison (latest year)
-- YoY district momentum (2025 vs 2024)
-
-**Market Pressure Heuristic**
-Flags districts with high recent price growth and low transaction activity. Exploratory indicator only, not a causal model.
+1. Standardize and rename source columns.
+2. Convert key numeric fields and remove invalid records.
+3. Classify area level (district/quarter/city aggregate).
+4. Build analysis-ready subset with valid price and transaction data.
+5. Analyze weighted long-term trend, district ranking, and YoY momentum.
 
 ## Key Findings
-- **Overall growth:** CHF 8,363/sqm (2009) -> CHF 18,254/sqm (2025); ~5.0% CAGR
-- **Most expensive districts (weighted):** Kreis 8, Kreis 7, Kreis 1
-- **Strongest 2025 momentum:** Kreis 10, Kreis 7, Kreis 5
-- **Highest segment pricing:** 1-room and 2-room units in latest year
+- Zurich weighted price-per-sqm increased from about **CHF 8,363 (2009)** to **CHF 18,254 (2025)**.
+- Estimated long-term growth is roughly **5.0% CAGR**.
+- Premium districts remain consistently more expensive than the citywide average.
+- YoY momentum (2025 vs 2024) differs across districts, suggesting localized market dynamics.
 
-## Business Interpretation
-- Premium central districts maintain price leadership
-- YoY momentum differences reflect localized demand/supply dynamics
-- Smaller units show higher CHF/sqm, indicating affordability pressure and urban concentration
-- Districts with high growth and low volume warrant closer monitoring
+## Recommendations
+- Track district-level YoY momentum alongside transaction counts to detect pressure zones early.
+- Separate strategic decisions for premium districts vs value-oriented districts.
+- Monitor smaller-unit pricing trends as a signal of affordability stress.
 
-## Project Structure
+## Tech Stack
+- Python
+- pandas
+- Jupyter Notebook
+
+## Repository Structure
 ```text
-project1.housing/
+zurich-housing-market-analysis/
 |-- bau515od5155.csv
 |-- clean_zurich_housing.py
 |-- housing_analysis.ipynb
-`-- data/
-    |-- zurich_housing_clean.csv
-    `-- zurich_housing_analysis_ready.csv
+|-- data/
+|   |-- zurich_housing_clean.csv
+|   `-- zurich_housing_analysis_ready.csv
+|-- requirements.txt
+`-- README.md
 ```
+
+## How to Run
+```bash
+pip install -r requirements.txt
+python clean_zurich_housing.py
+```
+
+Then open and run:
+- `housing_analysis.ipynb`
+
+## CV-Ready Impact
+- Built a reproducible housing analytics workflow from raw dataset to analysis-ready outputs.
+- Quantified long-term market growth (~5.0% CAGR) and district-level differences.
+- Produced business-oriented insights for pricing and market monitoring discussions.
+
+## Limitations
+- Source data is aggregated, limiting micro-level causal interpretation.
+- Findings are descriptive and exploratory, not predictive modeling.
+
+## Next Steps
+- Add visual exports (trend and district ranking charts) under a `visuals/` folder.
+- Introduce a small KPI dashboard (e.g., Streamlit or Power BI) for recruiter-ready presentation.
+- Expand with external variables (rates, macro indicators) for richer context.
